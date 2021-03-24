@@ -1,2 +1,2 @@
 { pkgs ? import nix/nixpkgs-pinned.nix {} }:
-pkgs.dbcritic
+pkgs.callPackage ./dbcritic.nix {}
