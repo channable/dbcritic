@@ -26,8 +26,12 @@ Issues may result from the cluster configuration or from the database schema.
 
 dbcritic implements the following checks:
 
-    TODO: Generate this part of the documentation the list of checks.
-    TODO: Each check already has an identifier and a help text.
+| Check        | Description                                                                   |
+| ------------ | ----------------------------------------------------------------------------- |
+| index_fk_ref | Check that foreign key has an index on the referencing side.                  |
+| primary_key  | Check that each table has a primary key constraint.                           |
+| timestamptz  | Check that columns are of type ‘timestamptz’ rather than of type ‘timestamp’. |
+| time_zone    | Check that the ‘TimeZone’ parameter is set to a sensible value.               |
 
 ## Configuration
 
