@@ -57,7 +57,7 @@ If any issues were reported, dbcritic exits with status code 1.
 If an unrecoverable error occurred, dbcritic exits with status code 2.
 In any other case, dbcritic exits with status code 0.
 
-# Bugs
+## Bugs
 
 The output is quite verbose and repetitive.
 Experienced users may favor more compact output.
