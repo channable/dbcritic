@@ -18,6 +18,22 @@ $ dbcritic
 
 [libpqenv]: https://www.postgresql.org/docs/current/libpq-envars.html
 
+## Building
+
+dbcritic can be build with Nix or without Nix.
+To build it with Nix, simply invoke nix-build:
+
+```console
+$ nix-build
+```
+
+To build it without Nix, first make sure you have installed Idris and libpq.
+Then invoke make:
+
+```console
+$ make
+```
+
 ## Description
 
 dbcritic connects to a PostgreSQL database using the specified parameters.
