@@ -1,8 +1,8 @@
-{ stdenv, idris, postgresql }:
+{ stdenv, lib, idris, postgresql }:
 stdenv.mkDerivation {
     name = "dbcritic";
 
-    src = stdenv.lib.cleanSource ./.;
+    src = lib.cleanSource ./.;
     buildInputs = [ idris postgresql ];
 
     phases = [ "unpackPhase" "buildPhase"
