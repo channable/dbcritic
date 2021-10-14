@@ -1,0 +1,44 @@
+---
+version: "v1.0"
+name: "Dbcritic CI Pipeline"
+
+agent:
+  machine:
+    type: "e1-standard-2"
+    os_image: "ubuntu2004"
+
+global_job_config:
+  env_vars:
+    - name: "NIX_VERSION"
+      value: "2.3.16"
+    - name: "NIX_INSTALL_SHA256SUM"
+      value: "0133a0670d72e07ef6658ddd095765ba1c73909d97de1e17c4e246b5fc8c8e15"
+
+  prologue:
+    commands:
+      - "checkout"
+
+      - "curl --output install-nix --retry 3 --connect-timeout 1 --location https://releases.nixos.org/nix/nix-${NIX_VERSION}/install"
+      - 'sha256sum --check --strict <<< "${NIX_INSTALL_SHA256SUM}  install-nix"'
+
+      # This variable is set by default by Semaphore, but causes the Nix installation to fail.
+      - "unset LD_LIBRARY_PATH"
+
+blocks:
+  - name: "Build Dbcritic for Linux"
+
+    task:
+      jobs:
+        - name: "Build Dbcritic for Linux"
+          commands:
+            # Linux-specific Nix setup
+            - "sudo mkdir /nix"
+            - "sudo chown -R semaphore:semaphore /nix"
+            - "cache restore linux-nix-store-"
+
+            - "sh ./install-nix --no-daemon"
+            - ". $HOME/.nix-profile/etc/profile.d/nix.sh"
+
+            - "nix build --print-build-logs --no-link"
+
+            - "cache store linux-nix-store-$(date -u -Idate) /nix"
