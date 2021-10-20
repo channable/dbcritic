@@ -56,7 +56,14 @@ blocks:
       jobs:
         - name: "Build Dbcritic for macOS"
           commands:
+            # Nix-based build:
             - "sh ./install-nix --darwin-use-unencrypted-nix-store-volume"
             - ". $HOME/.nix-profile/etc/profile.d/nix.sh"
 
             - "nix build --print-build-logs --no-link"
+
+            # Regular build with global libraries via Brew:
+            - "brew install libpq idris"
+            # Tell Idris where libpq is
+            - "export IDRIS_CFLAGS='-L/usr/local/opt/libpq/lib -I/usr/local/opt/libpq/include'"
+            - "make"
