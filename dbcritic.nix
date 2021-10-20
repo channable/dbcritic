@@ -9,6 +9,6 @@ stdenv.mkDerivation {
                "installPhase" "fixupPhase" ];
     installPhase = ''
         mkdir --parents "$out/bin"
-        mv dbcritic "$out/bin"
+        mv dbcritic-bin "$out/bin/dbcritic"
     '';
 }

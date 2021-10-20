@@ -1,2 +1,2 @@
-dbcritic: $(shell find -name '*.idr')
-	idris --total -o dbcritic Main.idr
+dbcritic-bin: $(shell find . -name '*.idr')
+	idris --total -o dbcritic-bin Main.idr
