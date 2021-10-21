@@ -27,12 +27,17 @@ To build it with Nix, simply invoke nix-build:
 $ nix-build
 ```
 
+This command will make a symlink `result` in the current directory.
+dbcritic can then be called via `./result/bin/dbcritic`.
+
 To build it without Nix, first make sure you have installed Idris and libpq.
 Then invoke make:
 
 ```console
 $ make
 ```
+
+This command will create a binary `dbcritic-bin` in the current directory.
 
 ## Description
 
