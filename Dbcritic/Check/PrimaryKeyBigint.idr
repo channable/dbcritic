@@ -4,12 +4,12 @@ import Control.IOExcept
 import Dbcritic.Check
 import Dbcritic.Libpq
 
-mkIssue : String -> String -> Issue
-mkIssue table column =
+mkIssue : String -> String -> String -> Issue
+mkIssue table column column_type =
     let
         identifier  = [ table, column ]
         description = "The table ‘" ++ table ++ "’ primary key (" ++ column ++ ") is "
-                      ++ "of type ‘integer’ instead of ‘bigint’."
+                      ++ "of type ‘" ++ column_type ++ "’ instead of ‘bigint’."
         problems    = [ "PostgreSQL's integer type is 4 bytes. It is relatively easy to run out of values." ]
         solutions   = [ "Change the type of ‘" ++ table ++ "." ++ column ++ "’ to ‘bigint’, "
                       ++ "as well as its associated auto generating sequence if it exists." ]
@@ -24,7 +24,7 @@ checkPrimaryKeyBigint = MkCheck name help inspect
     help = "Check that there are no tables with an integer primary key."
 
     inspectRow : List (Maybe String) -> IOExcept String Issue
-    inspectRow [Just table, Just column] = pure (mkIssue table column)
+    inspectRow [Just table, Just column, Just column_type] = pure (mkIssue table column column_type)
     inspectRow _ = ioe_fail "checkPrimaryKeyBigint: Bad result"
 
     inspect : PgConnection -> IOExcept String (List Issue)
@@ -32,17 +32,17 @@ checkPrimaryKeyBigint = MkCheck name help inspect
         res <- pgExecute conn """
             SELECT
                 kcu.table_name as table_name,
-                kcu.column_name as column_name
+                kcu.column_name as column_name,
+                c.data_type as column_type
             FROM information_schema.table_constraints tco
             JOIN information_schema.key_column_usage kcu
                 ON kcu.constraint_name = tco.constraint_name
                 AND kcu.constraint_schema = tco.constraint_schema
-                AND kcu.constraint_name = tco.constraint_name
             JOIN information_schema.columns c
                 ON c.table_name = kcu.table_name
                 AND c.column_name = kcu.column_name
             WHERE tco.constraint_type = 'PRIMARY KEY'
-            AND c.data_type = 'integer'
+            AND c.data_type IN ('smallint', 'integer')
             ORDER BY table_name
         """
         traverse inspectRow (pgGrid res)
