@@ -4,14 +4,15 @@ import Control.IOExcept
 import Dbcritic.Check
 import Dbcritic.Libpq
 
-mkIssue : String -> String -> String -> Issue
-mkIssue table column column_type =
+mkIssue : String -> String -> String -> String -> Issue
+mkIssue schema table column column_type =
     let
-        identifier  = [ table, column ]
-        description = "The table ‘" ++ table ++ "’ primary key (" ++ column ++ ") is "
+        fullTable   = schema ++ "." ++ table
+        identifier  = [ schema, table, column ]
+        description = "The table ‘" ++ fullTable ++ "’ primary key (" ++ column ++ ") is "
                       ++ "of type ‘" ++ column_type ++ "’ instead of ‘bigint’."
         problems    = [ "PostgreSQL's integer type is 4 bytes. It is relatively easy to run out of values." ]
-        solutions   = [ "Change the type of ‘" ++ table ++ "." ++ column ++ "’ to ‘bigint’, "
+        solutions   = [ "Change the type of ‘" ++ fullTable ++ "." ++ column ++ "’ to ‘bigint’, "
                       ++ "as well as its associated auto generating sequence if it exists." ]
     in
         MkIssue identifier description problems solutions IsNonEmpty IsNonEmpty IsNonEmpty
@@ -24,25 +25,29 @@ checkPrimaryKeyBigint = MkCheck name help inspect
     help = "Check that there are no tables with an integer primary key."
 
     inspectRow : List (Maybe String) -> IOExcept String Issue
-    inspectRow [Just table, Just column, Just column_type] = pure (mkIssue table column column_type)
+    inspectRow [Just schema, Just table, Just column, Just column_type] =
+                   pure (mkIssue schema table column column_type)
     inspectRow _ = ioe_fail "checkPrimaryKeyBigint: Bad result"
 
     inspect : PgConnection -> IOExcept String (List Issue)
     inspect conn = do
         res <- pgExecute conn """
             SELECT
+                kcu.table_schema as schema_name,
                 kcu.table_name as table_name,
                 kcu.column_name as column_name,
                 c.data_type as column_type
-            FROM information_schema.table_constraints tco
+            FROM information_schema.table_constraints tc
             JOIN information_schema.key_column_usage kcu
-                ON kcu.constraint_name = tco.constraint_name
-                AND kcu.constraint_schema = tco.constraint_schema
+                ON kcu.constraint_name = tc.constraint_name
+                AND kcu.constraint_schema = tc.constraint_schema
+                AND kcu.constraint_name = tc.constraint_name
             JOIN information_schema.columns c
-                ON c.table_name = kcu.table_name
+                ON c.table_schema = kcu.table_schema
+                AND c.table_name = kcu.table_name
                 AND c.column_name = kcu.column_name
-            WHERE tco.constraint_type = 'PRIMARY KEY'
+            WHERE tc.constraint_type = 'PRIMARY KEY'
             AND c.data_type IN ('smallint', 'integer')
-            ORDER BY table_name
+            ORDER BY schema_name, table_name
         """
         traverse inspectRow (pgGrid res)
