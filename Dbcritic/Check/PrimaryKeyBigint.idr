@@ -19,15 +19,15 @@ formatTypeByteSize type =
 mkIssue : String -> String -> String -> String -> Issue
 mkIssue schema table column column_type =
     let
-        fullTable   = schema ++ "." ++ table
-        identifier  = [ schema, table, column ]
-        description = "The table ‘" ++ fullTable ++ "’ primary key (" ++ column ++ ") is "
-                      ++ "of type ‘" ++ column_type ++ "’ instead of ‘bigint’."
+        fullTable      = schema ++ "." ++ table
+        identifier     = [ schema, table, column ]
+        description    = "The table ‘" ++ fullTable ++ "’ primary key (" ++ column ++ ") is "
+                         ++ "of type ‘" ++ column_type ++ "’ instead of ‘bigint’."
         columnByteSize = formatTypeByteSize column_type
-        problems    = [ "PostgreSQL's " ++ column_type ++ " type is " ++ columnByteSize
-                      ++ " bytes. It is relatively easy to run out of values." ]
-        solutions   = [ "Change the type of ‘" ++ fullTable ++ "." ++ column ++ "’ to ‘bigint’, "
-                      ++ "as well as its associated auto generating sequence if it exists." ]
+        problems       = [ "PostgreSQL's " ++ column_type ++ " type is " ++ columnByteSize
+                         ++ " bytes. It is relatively easy to run out of values." ]
+        solutions      = [ "Change the type of ‘" ++ fullTable ++ "." ++ column ++ "’ to ‘bigint’, "
+                         ++ "as well as its associated auto generating sequence if it exists." ]
     in
         MkIssue identifier description problems solutions IsNonEmpty IsNonEmpty IsNonEmpty
 
