@@ -4,6 +4,18 @@ import Control.IOExcept
 import Dbcritic.Check
 import Dbcritic.Libpq
 
+
+formatTypeByteSize : String -> String
+formatTypeByteSize type =
+    case byteSizeOfType type of
+        Nothing => "unknown"
+        Just byteSize => show byteSize
+    where
+        byteSizeOfType : String -> Maybe Int
+        byteSizeOfType "smallint" = Just 2
+        byteSizeOfType "integer" = Just 4
+        byteSizeOfType _ = Nothing
+
 mkIssue : String -> String -> String -> String -> Issue
 mkIssue schema table column column_type =
     let
@@ -11,7 +23,9 @@ mkIssue schema table column column_type =
         identifier  = [ schema, table, column ]
         description = "The table ‘" ++ fullTable ++ "’ primary key (" ++ column ++ ") is "
                       ++ "of type ‘" ++ column_type ++ "’ instead of ‘bigint’."
-        problems    = [ "PostgreSQL's integer type is 4 bytes. It is relatively easy to run out of values." ]
+        columnByteSize = formatTypeByteSize column_type
+        problems    = [ "PostgreSQL's " ++ column_type ++ " type is " ++ columnByteSize
+                      ++ " bytes. It is relatively easy to run out of values." ]
         solutions   = [ "Change the type of ‘" ++ fullTable ++ "." ++ column ++ "’ to ‘bigint’, "
                       ++ "as well as its associated auto generating sequence if it exists." ]
     in
