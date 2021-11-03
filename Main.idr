@@ -5,6 +5,7 @@ import Data.IORef
 import Dbcritic.Check
 import Dbcritic.Check.IndexFkRef
 import Dbcritic.Check.PrimaryKey
+import Dbcritic.Check.PrimaryKeyBigint
 import Dbcritic.Check.TimeZone
 import Dbcritic.Check.Timestamptz
 import Dbcritic.Config
@@ -12,7 +13,7 @@ import Dbcritic.Libpq
 import System
 
 checks : List Check
-checks = [ checkIndexFkRef, checkPrimaryKey, checkTimeZone, checkTimestamptz ]
+checks = [ checkIndexFkRef, checkPrimaryKey, checkPrimaryKeyBigint, checkTimeZone, checkTimestamptz ]
 
 main' : IOExcept String Int
 main' = do
