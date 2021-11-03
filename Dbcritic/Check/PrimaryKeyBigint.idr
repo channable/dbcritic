@@ -1,4 +1,4 @@
-module Dbcritic.Check.PrimaryKeyType
+module Dbcritic.Check.PrimaryKeyBigint
 
 import Control.IOExcept
 import Dbcritic.Check
@@ -17,14 +17,14 @@ formatTypeByteSize type =
         byteSizeOfType _ = Nothing
 
 mkIssue : String -> String -> String -> String -> Issue
-mkIssue schema table column column_type =
+mkIssue schema table column columnType =
     let
         fullTable      = schema ++ "." ++ table
         identifier     = [ schema, table, column ]
         description    = "The table ‘" ++ fullTable ++ "’ primary key (" ++ column ++ ") is "
-                         ++ "of type ‘" ++ column_type ++ "’ instead of ‘bigint’."
-        columnByteSize = formatTypeByteSize column_type
-        problems       = [ "PostgreSQL's " ++ column_type ++ " type is " ++ columnByteSize
+                         ++ "of type ‘" ++ columnType ++ "’ instead of ‘bigint’."
+        columnByteSize = formatTypeByteSize columnType
+        problems       = [ "PostgreSQL's " ++ columnType ++ " type is " ++ columnByteSize
                          ++ " bytes. It is relatively easy to run out of values." ]
         solutions      = [ "Change the type of ‘" ++ fullTable ++ "." ++ column ++ "’ to ‘bigint’, "
                          ++ "as well as its associated auto generating sequence if it exists." ]
@@ -36,11 +36,11 @@ checkPrimaryKeyBigint : Check
 checkPrimaryKeyBigint = MkCheck name help inspect
     where
     name = "primary_key_bigint"
-    help = "Check that there are no tables with an integer primary key."
+    help = "Check that there are no tables with a smallint or integer primary key."
 
     inspectRow : List (Maybe String) -> IOExcept String Issue
-    inspectRow [Just schema, Just table, Just column, Just column_type] =
-                   pure (mkIssue schema table column column_type)
+    inspectRow [Just schema, Just table, Just column, Just columnType] =
+                   pure (mkIssue schema table column columnType)
     inspectRow _ = ioe_fail "checkPrimaryKeyBigint: Bad result"
 
     inspect : PgConnection -> IOExcept String (List Issue)
