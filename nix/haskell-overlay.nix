@@ -1,4 +1,4 @@
-{ sources ? import ./sources.nix, pkgs }:
+{ pkgs }:
 self: super:
 
 {

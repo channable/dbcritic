@@ -2,7 +2,6 @@ self: super:
 let
   sources = import ./sources.nix;
   haskellOverlay = import ./haskell-overlay.nix {
-    inherit sources;
     pkgs = self;
   };
 in
