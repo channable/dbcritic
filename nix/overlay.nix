@@ -8,5 +8,7 @@ let
 in
 {
   sources = if super ? sources then super.sources // sources else sources;
-  haskellPackages944 = super.haskell.packages.ghc944.extend haskellOverlay;
+  # Generic haskellPackages since neither Idris nor its dependencies
+  # are pinned to a specific GHC version.
+  haskellPackages = super.haskellPackages.extend haskellOverlay;
 }
