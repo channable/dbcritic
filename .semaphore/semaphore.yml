@@ -7,6 +7,16 @@ agent:
     type: "e1-standard-2"
     os_image: "ubuntu2004"
 
+auto_cancel:
+  running:
+    # We don't want to cancel running master and testing jobs. Other branches
+    # are fine to cancel
+    when: "branch != 'master' AND branch !~ '^testing/'"
+
+  # Auto-cancelling queued jobs is always fine
+  queued:
+    when: "true"
+
 global_job_config:
   env_vars:
     - name: "NIX_VERSION"
