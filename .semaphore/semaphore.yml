@@ -50,7 +50,7 @@ blocks:
             - "sh ./install-nix --no-daemon"
             - ". $HOME/.nix-profile/etc/profile.d/nix.sh"
 
-            - "nix build --print-build-logs --no-link"
+            - "nix build -f release.nix --print-build-logs --no-link"
 
             - "cache store linux-nix-store-$(date -u -Idate) /nix"
 
