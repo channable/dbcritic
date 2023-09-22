@@ -9,9 +9,8 @@ in {
   # Generic haskellPackages since neither Idris nor its dependencies
   # are pinned to a specific GHC version.
   haskellPackages = super.haskellPackages.extend haskellOverlay;
-  # There's no nice composable way to extend the Idris package overlay
-  idrisPackages = super.idrisPackages.override { overrides = idrisOverlay; };
 
-  # Just like fro Idris itself, we'll provide a top-level synonym for the dbcritic package
-  dbcritic = self.idrisPackages.dbcritic;
+  # We can't add dbcritic to the Idris packages overlay because it's not a
+  # proper Idris package
+  dbcritic = self.callPackage ../dbcritic.nix { };
 }
