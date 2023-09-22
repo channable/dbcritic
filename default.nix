@@ -1,2 +1,3 @@
-{ pkgs ? import nix/nixpkgs-pinned.nix {} }:
-pkgs.callPackage ./dbcritic.nix {}
+{ pkgs ? import nix/nixpkgs-pinned.nix { } }:
+
+pkgs.mkShell { inputsFrom = with pkgs; [ dbcritic ]; }

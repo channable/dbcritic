@@ -24,7 +24,7 @@ dbcritic can be build with Nix or without Nix.
 To build it with Nix, simply invoke nix-build:
 
 ```console
-$ nix-build
+$ nix-build release.nix
 ```
 
 This command will make a symlink `result` in the current directory.
