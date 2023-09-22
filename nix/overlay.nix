@@ -11,4 +11,7 @@ in {
   haskellPackages = super.haskellPackages.extend haskellOverlay;
   # There's no nice composable way to extend the Idris package overlay
   idrisPackages = super.idrisPackages.override { overrides = idrisOverlay; };
+
+  # Just like fro Idris itself, we'll provide a top-level synonym for the dbcritic package
+  dbcritic = self.idrisPackages.dbcritic;
 }
