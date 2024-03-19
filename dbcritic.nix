@@ -1,4 +1,4 @@
-{ stdenv, lib, idris, postgresql }:
+{ stdenv, lib, idrisDbcritic, postgresql }:
 stdenv.mkDerivation {
   name = "dbcritic";
 
@@ -15,7 +15,7 @@ stdenv.mkDerivation {
         && !builtins.elem (baseNameOf path) [ "nix" ".semaphore" ".git" ]);
   };
 
-  buildInputs = [ idris postgresql ];
+  buildInputs = [ idrisDbcritic postgresql ];
 
   phases = [ "unpackPhase" "buildPhase" "installPhase" "fixupPhase" ];
   installPhase = ''
