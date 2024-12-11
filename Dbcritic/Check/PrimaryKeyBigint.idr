@@ -62,6 +62,7 @@ checkPrimaryKeyBigint = MkCheck name help inspect
                 AND c.column_name = kcu.column_name
             WHERE tc.constraint_type = 'PRIMARY KEY'
             AND c.data_type IN ('smallint', 'integer')
+            AND kcu.table_schema NOT IN ('information_schema', 'pg_catalog')
             ORDER BY schema_name, table_name
         """
         traverse inspectRow (pgGrid res)
