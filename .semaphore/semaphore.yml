@@ -53,5 +53,6 @@ blocks:
             - "echo 'experimental-features = nix-command flakes' | sudo tee -a /etc/nix/nix.conf"
 
             - "nix build --file release.nix --print-build-logs --no-link"
+            - "rm --force /nix/var/nix/gc-socket/socket"
 
             - "cache store linux-nix-store-$(date -u -Idate) /nix"
