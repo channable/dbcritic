@@ -50,6 +50,8 @@ blocks:
             - "sh ./install-nix --no-daemon"
             - ". $HOME/.nix-profile/etc/profile.d/nix.sh"
 
-            - "nix build -f release.nix --print-build-logs --no-link"
+            - "echo 'experimental-features = nix-command flakes' | sudo tee -a /etc/nix/nix.conf"
+
+            - "nix build --file release.nix --print-build-logs --no-link"
 
             - "cache store linux-nix-store-$(date -u -Idate) /nix"
