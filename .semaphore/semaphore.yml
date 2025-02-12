@@ -50,6 +50,7 @@ blocks:
             - "sh ./install-nix --no-daemon"
             - ". $HOME/.nix-profile/etc/profile.d/nix.sh"
 
+            - "sudo mkdir -p /etc/nix"
             - "echo 'experimental-features = nix-command flakes' | sudo tee -a /etc/nix/nix.conf"
 
             - "nix build --file release.nix --print-build-logs --no-link"
