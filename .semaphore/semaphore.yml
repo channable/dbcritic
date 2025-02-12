@@ -20,9 +20,9 @@ auto_cancel:
 global_job_config:
   env_vars:
     - name: "NIX_VERSION"
-      value: "2.3.16"
+      value: "2.24.12"
     - name: "NIX_INSTALL_SHA256SUM"
-      value: "0133a0670d72e07ef6658ddd095765ba1c73909d97de1e17c4e246b5fc8c8e15"
+      value: "a2d0e4f6954a6295664994dc4e5492843b7de3e7e23e89a1df9e0820975d2fde"
 
   prologue:
     commands:
