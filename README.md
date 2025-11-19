@@ -1,5 +1,11 @@
 # dbcritic
 
+> [!NOTE]
+>
+> This repository has been archived. Please consider using a different database schema linter
+> instead.
+
+
 dbcritic finds problems in a database schema.
 
 ## Synopsis
